@@ -1,4 +1,4 @@
-const db = require('../config/db-config');
+const db = require('./db-config');
 
 exports.fire = (sqlQuery,params = []) => {
     return new Promise((resolve,reject)=>{
