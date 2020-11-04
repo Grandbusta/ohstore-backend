@@ -14,7 +14,7 @@ app.use(bodyparser.urlencoded({extended:false}));
 app.use(bodyparser.json());
 
 
-app.use('/product',productRoute)
+app.use('/products',productRoute)
 
 
 app.use(headers.headers);
