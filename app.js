@@ -5,6 +5,7 @@ const port=process.env.PORT||9000
 
 //Routes
 const productRoute=require('./api/routes/product')
+const userRoute=require('./api/routes/user')
 
 //middlewares
 const headers = require('./api/middlewares/headers');
@@ -15,7 +16,7 @@ app.use(bodyparser.json());
 
 
 app.use('/products',productRoute)
-
+app.use('/users',userRoute)
 
 app.use(headers.headers);
 app.use(errors.defineError);
