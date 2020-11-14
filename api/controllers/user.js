@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const db=require('../config/db-func')
 const validate=require('email-validator')
+const User=require('../models/userModel')
 
 const login=async (req,res,next)=>{
 		const {email,password}=req.body
@@ -50,8 +51,9 @@ const signup=async (req,res,next)=>{
         let validEmail=validate.validate(email)
         if(validEmail){
 					try {
-						let check=await db.fire('select * from users where ??=?',['email',email])
-						if(check.length){
+						let check=await User.findOne({where:{email:email},attributes:['email']})
+						if(check!==null){
+							console.log(check.toJSON())
 							res.status(201).json({
 								message:'user already exist'
 							})
@@ -63,8 +65,8 @@ const signup=async (req,res,next)=>{
 								last_name:lastname,
 								password_hash:password_hash
 							}
-							let createUser=await db.fire('insert into users SET ?',values)
-							if(createUser.affectedRows>=1){
+							let createUser=await User.create(values)
+							if(createUser){
 								res.status(200).json({
 									status:"success",
 									message:'user created successfully'
