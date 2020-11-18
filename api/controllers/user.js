@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
-const db=require('../config/db-func')
 const validate=require('email-validator')
+const jwt=require('jsonwebtoken')
 const User=require('../models/userModel')
 
 const login=async (req,res,next)=>{
@@ -9,12 +9,17 @@ const login=async (req,res,next)=>{
 			let validateEmail=validate.validate(email)
 			if(validateEmail){
 				try {
-					let checkUser=await db.fire('select * from users where ??=?',['email',email])
-					if(checkUser.length){
-						let comparePassword=await bcrypt.compare(password,checkUser[0].password_hash)
+					let check=await User.findOne({where:{email:email},attributes:['email','password_hash']})
+					if(check!==null){
+						data=check.toJSON()
+						let comparePassword=await bcrypt.compare(password,data.password_hash)
 						if(comparePassword){
+							const token=jwt.sign({
+								email:data.email
+							},'MUST_SIGN',{expiresIn:'1h'})
 							res.status(200).json({
-								message:'Login successful'
+								message:'Auth successful',
+								token:token
 							})
 						}else{
 							res.status(400).json({
@@ -53,7 +58,6 @@ const signup=async (req,res,next)=>{
 					try {
 						let check=await User.findOne({where:{email:email},attributes:['email']})
 						if(check!==null){
-							console.log(check.toJSON())
 							res.status(201).json({
 								message:'user already exist'
 							})

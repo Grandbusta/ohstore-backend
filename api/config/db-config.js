@@ -4,7 +4,7 @@ const sequelize=new Sequelize('ohwears','root','busta',{host:'localhost',dialect
 check=async ()=>{
     try {
         await sequelize.authenticate()
-        // sequelize.sync({alter:true})
+        sequelize.sync()
         console.log('connected')
     } catch (error) {
         console.log('error')
