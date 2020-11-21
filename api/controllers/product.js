@@ -49,11 +49,7 @@ const oneProduct=async(req,res,next)=>{
     }
 }
 
-const categories=async(req,res,next)=>{
-    const category=await Category.bulkCreate([{cat_name:'electronics'},{cat_name:'gadgets'}])
-    const catego=JSON.parse(JSON.stringify(category))
-    console.log(catego)
-}
+
 
 const createProduct=async (req,res,next)=>{
     const findCat=await Category.findAll({where:{cat_name:['electronics','gadgets']}})
@@ -78,6 +74,5 @@ const createProduct=async (req,res,next)=>{
 module.exports={
     product,
     oneProduct,
-    createProduct,
-    categories
+    createProduct
 }

@@ -7,6 +7,7 @@ const port=process.env.PORT||9000
 const productRoute=require('./api/routes/product')
 const userRoute=require('./api/routes/user')
 const orderRoute=require('./api/routes/orders')
+const categoryRoute=require('./api/routes/category')
 
 //middlewares
 const headers = require('./api/middlewares/headers');
@@ -20,6 +21,7 @@ app.use(headers.headers);
 app.use('/products',productRoute)
 app.use('/users',userRoute)
 app.use('/orders',orderRoute)
+app.use('/categories',categoryRoute)
 
 app.use(errors.defineError);
 app.use(errors.defaultError);
