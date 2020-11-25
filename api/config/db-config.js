@@ -1,5 +1,5 @@
 const {Sequelize}=require('sequelize')
-const sequelize=new Sequelize('ohwears','root','busta',{host:'localhost',dialect:'mysql'})
+const sequelize=new Sequelize('ohstore','root','busta',{host:'localhost',dialect:'mysql'})
 
 check=async ()=>{
     try {

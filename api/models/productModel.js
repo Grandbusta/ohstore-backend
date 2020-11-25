@@ -7,8 +7,8 @@ const Product=sq.define('Product',{
     slug:{type:DataTypes.STRING,allowNull:false,unique:true},
     featured_imgurl:{type:DataTypes.STRING},
     content:{type:DataTypes.TEXT},
-    selling_price:{type:DataTypes.DOUBLE,},
-    bonus_price:{type:DataTypes.DOUBLE,},
+    selling_price:{type:DataTypes.DOUBLE},
+    bonus_price:{type:DataTypes.DOUBLE},
     product_status:{type:DataTypes.ENUM,values:['draft','trash','published'],defaultValue:'published'},
 },{
     tableName:'products'
