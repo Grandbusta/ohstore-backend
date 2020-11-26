@@ -59,48 +59,52 @@ const getProduct=async(req,res,next)=>{
 
 
 const createProduct=async (req,res,next)=>{
-    const seno=await sendMail('bustajay30@gmail.com','Your order has been cancelled','A new dawn')
-    if(seno.messageId){
-        res.status(200).json({
-            message:'email sent sucessfully'
+    const {title,content,selling_price,bonus_price,categories}=req.body
+    const date=new Date()
+    let stDate=date.toISOString()
+    if(title){
+        const findCat=await Category.findAll({where:{cat_name:categories?categories:null}})
+        const catResult=JSON.parse(JSON.stringify(findCat))
+        console.log(catResult)
+        let slug=title.replace(/[^A-Za-z0-9\s]/gi,'').toLowerCase().replace(/[\s]/g,'-')
+          const data={
+              title:title,
+              slug:`${slug}-${stDate}`,
+              featured_imgurl:'./dsa.jpg',
+              content:content?content:'',
+              selling_price:selling_price?selling_price:0.00,
+              bonus_price:bonus_price?bonus_price:0.00,
+              pro_images:[]
+          }
+          console.log(data)
+          let createPro=await Product.create(data,{include:[{model:proImg,as:'product_images'}]})
+          const productDetails=createPro.toJSON()
+          const catArr=[]
+          if(catResult.length&&productDetails){
+            catResult.forEach(caty=>{
+              catArr.push({ProductId:productDetails.id,categoryId:caty.id})
+            })
+            await pro_cat.bulkCreate(catArr)
+          }
+          res.status(200).json({
+              message:'Product created successfully',
+          })
+      
+    }else{
+        res.status(400).json({
+            message:'title cannot be empty'
         })
     }
-    // const {title,content,selling_price,bonus_price,categories}=req.body
-    // const date=new Date()
-    // let stDate=date.toISOString()
-    // if(title){
-    //     const findCat=await Category.findAll({where:{cat_name:categories?categories:null}})
-    //     const catResult=JSON.parse(JSON.stringify(findCat))
-    //     console.log(catResult)
-    //     let slug=title.replace(/[^A-Za-z0-9\s]/gi,'').toLowerCase().replace(/[\s]/g,'-')
-    //       const data={
-    //           title:title,
-    //           slug:`${slug}-${stDate}`,
-    //           featured_imgurl:'./dsa.jpg',
-    //           content:content?content:'',
-    //           selling_price:selling_price?selling_price:'',
-    //           bonus_price:bonus_price?bonus_price:'',
-    //           pro_images:[]
-    //       }
-    //       console.log(data)
-    //       let createPro=await Product.create(data,{include:[{model:proImg,as:'product_images'}]})
-    //       const productDetails=createPro.toJSON()
-    //       const catArr=[]
-    //       if(catResult.length&&productDetails){
-    //         catResult.forEach(caty=>{
-    //           catArr.push({ProductId:productDetails.id,categoryId:caty.id})
-    //         })
-    //         await pro_cat.bulkCreate(catArr)
-    //       }
-    //       res.status(200).json({
-    //           message:'Product created successfully',
-    //       })
-      
-    // }else{
-    //     res.status(400).json({
-    //         message:'title cannot be empty'
-    //     })
-    // }
+    const name='Busta'
+    const info={
+        address:'bustajay30@gmail.com',
+        title:'Your order has been cancelled',
+        content:`<h1>Your order has been created sucessfully by ${name}</h2>`
+    }
+    const seno=await sendMail(info)
+    if(seno.messageId){
+        console.log(seno)
+    }
 }
 
 module.exports={

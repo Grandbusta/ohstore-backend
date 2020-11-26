@@ -1,7 +1,7 @@
 const nodeMailer=require('nodemailer')
 
 
-const sendMail=async(sendAddress,subject,content)=>{
+const sendMail=async(info)=>{
     const transporter=nodeMailer.createTransport({
         service:'gmail',
         auth:{
@@ -12,9 +12,9 @@ const sendMail=async(sendAddress,subject,content)=>{
 
     let mailOptions={
         from:'Ohstore',
-        to:sendAddress.toString(),
-        subject:subject.toString(),
-        text:content.toString()
+        to:info.address,
+        subject:info.title,
+        html:info.content
     }
 try {
     const sendy=await transporter.sendMail(mailOptions)
