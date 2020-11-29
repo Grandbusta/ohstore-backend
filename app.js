@@ -17,6 +17,7 @@ app.use(bodyparser.urlencoded({extended:false}));
 app.use(bodyparser.json());
 
 app.use(headers.headers);
+app.use(express.static('./api/uploads'))
 
 app.use('/products',productRoute)
 app.use('/users',userRoute)

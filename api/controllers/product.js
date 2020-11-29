@@ -1,5 +1,7 @@
 const {Product,proImg,Review,Category,pro_cat}=require('../models/pImgRel')
 const sendMail=require('../utils/sendMail')
+const cloudinary=require('../config/cloudinary')
+const fs=require('fs')
 
 const getAllProduct=async(req,res,next)=>{
     const findAll=await Product.findAll({
@@ -9,9 +11,9 @@ const getAllProduct=async(req,res,next)=>{
     })
     const data=JSON.parse(JSON.stringify(findAll))
     if(data.length){
-            res.status(200).json({
-                data
-            })
+			res.status(200).json({
+					data
+			})
     }else{
         res.status(404).json({
             message:'no product available',
@@ -57,11 +59,14 @@ const getProduct=async(req,res,next)=>{
 }
 
 
+    
 
 const createProduct=async (req,res,next)=>{
+    const uploadFile= await cloudinary.uploads(req.file.path,'OhstoreImgs')
+    console.log(uploadFile)
+    fs.unlinkSync(req.file.path)
     const {title,content,selling_price,bonus_price,categories}=req.body
-    const date=new Date()
-    let stDate=date.toISOString()
+    let stDate=Date.now()
     if(title){
         const findCat=await Category.findAll({where:{cat_name:categories?categories:null}})
         const catResult=JSON.parse(JSON.stringify(findCat))
@@ -70,13 +75,12 @@ const createProduct=async (req,res,next)=>{
           const data={
               title:title,
               slug:`${slug}-${stDate}`,
-              featured_imgurl:'./dsa.jpg',
+              featured_imgurl:uploadFile.url,
               content:content?content:'',
               selling_price:selling_price?selling_price:0.00,
               bonus_price:bonus_price?bonus_price:0.00,
               pro_images:[]
           }
-          console.log(data)
           let createPro=await Product.create(data,{include:[{model:proImg,as:'product_images'}]})
           const productDetails=createPro.toJSON()
           const catArr=[]
@@ -95,16 +99,16 @@ const createProduct=async (req,res,next)=>{
             message:'title cannot be empty'
         })
     }
-    const name='Busta'
-    const info={
-        address:'bustajay30@gmail.com',
-        title:'Your order has been cancelled',
-        content:`<h1>Your order has been created sucessfully by ${name}</h2>`
-    }
-    const seno=await sendMail(info)
-    if(seno.messageId){
-        console.log(seno)
-    }
+    // const name='Busta'
+    // const info={
+    //     address:'bustajay30@gmail.com',
+    //     title:'Your order has been cancelled',
+    //     content:`<h1>Your order has been created sucessfully by ${name}</h2>`
+    // }
+    // const seno=await sendMail(info)
+    // if(seno.messageId){
+    //     console.log(seno)
+    // }
 }
 
 module.exports={
