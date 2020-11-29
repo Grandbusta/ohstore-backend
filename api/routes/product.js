@@ -5,7 +5,7 @@ const upload=require('../utils/imageUpload')
 
 router.get('/',Product.getAllProduct)
 router.get('/:slug',Product.getProduct)
-router.post('/',upload.single('featured_image'),Product.createProduct)
+router.post('/',upload.array('product_images'),Product.createProduct)
 
 module.exports=router;
 

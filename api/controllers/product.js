@@ -62,9 +62,18 @@ const getProduct=async(req,res,next)=>{
     
 
 const createProduct=async (req,res,next)=>{
-    const uploadFile= await cloudinary.uploads(req.file.path,'OhstoreImgs')
-    console.log(uploadFile)
-    fs.unlinkSync(req.file.path)
+    const urls=[]
+    const files=req.files
+    if(files.length){
+        for(const file of files){
+            const {path}=file
+            const uploadFile= await cloudinary.uploads(path,'OhstoreImgs')
+            urls.push({imageurl:uploadFile.url})
+            fs.unlinkSync(path)
+        }
+    }
+
+    console.log(urls)
     const {title,content,selling_price,bonus_price,categories}=req.body
     let stDate=Date.now()
     if(title){
@@ -75,11 +84,11 @@ const createProduct=async (req,res,next)=>{
           const data={
               title:title,
               slug:`${slug}-${stDate}`,
-              featured_imgurl:uploadFile.url,
+              featured_imgurl:urls.length?urls[0].url:'',
               content:content?content:'',
               selling_price:selling_price?selling_price:0.00,
               bonus_price:bonus_price?bonus_price:0.00,
-              pro_images:[]
+              product_images:urls.length?[...urls]:[]
           }
           let createPro=await Product.create(data,{include:[{model:proImg,as:'product_images'}]})
           const productDetails=createPro.toJSON()
