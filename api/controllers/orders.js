@@ -1,14 +1,15 @@
 const {Order,Product,User,Delivery,user_orders,pro_order}=require('../models/pImgRel')
 const product = require('./product')
+const sendMail=require('../utils/sendMail')
 
 const createOrder=async(req,res,next)=>{
-    const getUser=await User.findOne({where:{email:'lipoo@mail.com'}})
+    console.log(req.userData)
+    const getUser=await User.findOne({where:{email:req.userData.email}})
     const user=getUser.toJSON();
     const getProducts=await Product.findAll({
         where:{slug:['wave','newone']}
     })
     const prodDetails=JSON.parse(JSON.stringify(getProducts))
-    console.log(prodDetails);
     const createOrd=await Order.create({
         trx_ref:'bisiwa',
         UserId:user.id,
@@ -51,9 +52,26 @@ const createOrder=async(req,res,next)=>{
         ]
     })
     const getit=JSON.parse(JSON.stringify(getOrd))
+
     res.status(200).json({
-        getit
+        order:getit
     })
+
+    const name='Busta'
+    const info={
+        address:'bustajay30@gmail.com',
+        title:'Your order has been cancelled',
+        content:`<h1>Your order has been created sucessfully by ${name}</h2>`
+    }
+    try {
+        const seno=await sendMail(info)
+        if(seno.messageId){
+            console.log(seno)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 const userOrders=(req,res,next)=>{

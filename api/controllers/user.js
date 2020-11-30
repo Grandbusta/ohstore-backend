@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const validate=require('email-validator')
 const jwt=require('jsonwebtoken')
 const User=require('../models/userModel')
+const env=require('../config/env')
 
 const login=async (req,res,next)=>{
 		const {email,password}=req.body
@@ -16,7 +17,7 @@ const login=async (req,res,next)=>{
 						if(comparePassword){
 							const token=jwt.sign({
 								email:data.email
-							},'MUST_SIGN',{expiresIn:'1h'})
+							},env.JWT_KEY,{expiresIn:'1h'})
 							res.status(200).json({
 								message:'Auth successful',
 								token:token

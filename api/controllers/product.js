@@ -1,5 +1,4 @@
 const {Product,proImg,Review,Category,pro_cat}=require('../models/pImgRel')
-const sendMail=require('../utils/sendMail')
 const cloudinary=require('../config/cloudinary')
 const fs=require('fs')
 
@@ -108,16 +107,6 @@ const createProduct=async (req,res,next)=>{
             message:'title cannot be empty'
         })
     }
-    // const name='Busta'
-    // const info={
-    //     address:'bustajay30@gmail.com',
-    //     title:'Your order has been cancelled',
-    //     content:`<h1>Your order has been created sucessfully by ${name}</h2>`
-    // }
-    // const seno=await sendMail(info)
-    // if(seno.messageId){
-    //     console.log(seno)
-    // }
 }
 
 module.exports={
