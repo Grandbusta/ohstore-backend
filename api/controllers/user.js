@@ -17,7 +17,7 @@ const login=async (req,res,next)=>{
 						if(comparePassword){
 							const token=jwt.sign({
 								email:data.email
-							},env.JWT_KEY,{expiresIn:'1h'})
+							},env.JWT_KEY,{expiresIn:'48h'})
 							res.status(200).json({
 								message:'Auth successful',
 								token:token
@@ -102,7 +102,39 @@ const signup=async (req,res,next)=>{
     }
 }
 
+
+const deleteUser=async(req,res,next)=>{
+	try {
+		await User.destroy({where:{id:req.userData.id}})
+		res.status(202).json({
+			message:'user deleted sucessfully'
+		})
+	} catch (error) {
+		res.status(500).json({
+			message:'An error occured'
+		})
+	}
+}
+
+const updateUser=async(req,res,next)=>{
+	try {
+		await User.update(
+			{...req.body},
+			{where:{id:req.userData.id}}
+		)
+		res.status(201).json({
+			message:'update successful'
+		})
+	} catch (error) {
+		res.status(500).json({
+			message:'An error occured'
+		})
+	}
+}
+
 module.exports={
     signup,
-    login
+	login,
+	deleteUser,
+	updateUser
 }

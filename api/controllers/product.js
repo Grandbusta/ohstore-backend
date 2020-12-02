@@ -109,8 +109,42 @@ const createProduct=async (req,res,next)=>{
     }
 }
 
+
+const deleteProduct=async(req,res,next)=>{
+    const {id}=req.params
+    try {
+        await Product.destroy({where:{id:id}})
+        res.status(202).json({
+            message:'Product deleted successfully'
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:'An error occured'
+        })
+    }
+}
+
+
+const updateProduct=async(req,res,next)=>{
+    try {
+        await Product.update(
+            {...req.body},
+            {where:{id:req.params.id}}
+        )
+        res.status(200).json({
+            message:'Product updated successfully'
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:'An error occured'
+        })
+    }
+}
+
 module.exports={
     getAllProduct,
     getProduct,
-    createProduct
+    createProduct,
+    deleteProduct,
+    updateProduct
 }

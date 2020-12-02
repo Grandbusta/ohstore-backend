@@ -11,7 +11,7 @@ const createOrder=async(req,res,next)=>{
             })
             const prodDetails=JSON.parse(JSON.stringify(getProducts))
             const createOrd=await Order.create({
-                trx_ref:'holybust',
+                trx_ref:'why',
                 UserId:getUser.id,
                 Delivery:[
                     {
@@ -35,7 +35,7 @@ const createOrder=async(req,res,next)=>{
             await pro_order.bulkCreate(proarr)
             await user_orders.create({OrderId:orderdet.id,UserId:getUser.id})
             const getOrd=await Order.findAll({
-                where:{trx_ref:'holybust'},
+                where:{trx_ref:'why'},
                 attributes:{exclude:['UserId']},
                 include:[
                     {model:User,attributes:['email','first_name','last_name']},
@@ -82,11 +82,44 @@ const createOrder=async(req,res,next)=>{
 
 }
 
-const userOrders=(req,res,next)=>{
-
+const userOrders=async(req,res,next)=>{
+    const user=await User.findOne({
+        where:{id:req.userData.id},
+        attributes:['id','email','first_name','last_name'],
+        include:[
+            {model:Order,
+            attributes:{exclude:['UserId']},
+            through:{attributes:[]},
+            include:[
+                {model:Product,
+                attributes:{exclude:['createdAt','updatedAt','content','product_status']},
+                through:{attributes:[]}
+            }
+        ]
+    }
+        ]
+    })
+    res.status(200).json({
+        data:user
+    })
 }
+
+const cancelOrder=(req,res,next)=>{
+    try {
+    await Product.update(
+        {order_status:'cancelled'},
+        {where:{id:req.params.id}}
+      )
+    } catch (error) {
+        res.status(500).json({
+            message:'An error occured'
+        })
+    }
+}
+
 
 module.exports={
     createOrder,
-    userOrders
+    userOrders,
+    cancelOrder
 }
