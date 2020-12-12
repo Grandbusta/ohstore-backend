@@ -132,9 +132,52 @@ const updateUser=async(req,res,next)=>{
 	}
 }
 
+const makeAdmin=async(req,res,next)=>{
+	try {
+		await User.update({user_type:'admin'},{where:{id:req.params.id}})
+		res.status(202).json({
+			message:'User successfully made admin'
+		})
+	} catch (error) {
+		res.status(500).json({
+			message:'an error occurred'
+		})
+	}
+}
+
+
+const createAdmin=async(req,res,next)=>{
+	const findAdmin=await User.findOne({where:{email:'bustajay30@gmail.com'}})
+	if(!findAdmin){
+		try {
+			const userd=await User.create({
+				email:'bustajay30@gmail.com',
+				first_name:'Grand',
+				last_name:'Busta',
+				user_type:'admin',
+				password_hash:bcrypt.hashSync('1234',10)
+			})
+			res.status(200).json({
+				userd
+			})
+		} catch (error) {
+			res.status(500).json({
+				message:'An error occured'
+			})
+		}
+	}else{
+		res.status(400).json({
+			message:'Already created'
+		})
+	}
+}
+
+
 module.exports={
     signup,
 	login,
 	deleteUser,
-	updateUser
+	updateUser,
+	makeAdmin,
+	createAdmin
 }

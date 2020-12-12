@@ -104,7 +104,7 @@ const userOrders=async(req,res,next)=>{
     })
 }
 
-const cancelOrder=(req,res,next)=>{
+const cancelOrder=async(req,res,next)=>{
     try {
     await Product.update(
         {order_status:'cancelled'},
