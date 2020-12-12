@@ -8,6 +8,7 @@ const productRoute=require('./api/routes/product')
 const userRoute=require('./api/routes/user')
 const orderRoute=require('./api/routes/orders')
 const categoryRoute=require('./api/routes/category')
+const reviewRoute=require('./api/routes/reviews')
 
 //middlewares
 const headers = require('./api/middlewares/headers');
@@ -22,6 +23,7 @@ app.use(express.static('./api/uploads'))
 app.use('/products',productRoute)
 app.use('/users',userRoute)
 app.use('/orders',orderRoute)
+app.use('/reviews',reviewRoute)
 app.use('/categories',categoryRoute)
 
 app.use(errors.defineError);

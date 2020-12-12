@@ -31,7 +31,9 @@ const getProduct=async(req,res,next)=>{
                     as:'product_images',
                     attributes:['id','imageurl'],
                 },
-                {model:Review},
+                {model:Review,
+                    attributes:{exclude:['ProductId','UserId','updatedAt']}
+                },
                 {model:Category,
                     through:{attributes:[]},
                     attributes:['id','cat_name']
@@ -63,7 +65,7 @@ const getProduct=async(req,res,next)=>{
 const createProduct=async (req,res,next)=>{
     const urls=[]
     const files=req.files
-    if(files.length){
+    if(files){
         for(const file of files){
             const {path}=file
             const uploadFile= await cloudinary.uploads(path,'OhstoreImgs')
@@ -72,7 +74,7 @@ const createProduct=async (req,res,next)=>{
         }
     }
 
-    console.log(urls)
+    console.log(urls[0].imageurl)
     const {title,content,selling_price,bonus_price,categories}=req.body
     let stDate=Date.now()
     if(title){
@@ -83,7 +85,7 @@ const createProduct=async (req,res,next)=>{
           const data={
               title:title,
               slug:`${slug}-${stDate}`,
-              featured_imgurl:urls.length?urls[0].url:'',
+              featured_imgurl:urls.length?urls[0].imageurl:'',
               content:content?content:'',
               selling_price:selling_price?selling_price:0.00,
               bonus_price:bonus_price?bonus_price:0.00,
