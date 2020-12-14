@@ -1,4 +1,4 @@
-const {Product,proImg,Review,Category,pro_cat}=require('../models/pImgRel')
+const {Product,proImg,Review,Category,pro_cat, User}=require('../models/pImgRel')
 const cloudinary=require('../config/cloudinary')
 const fs=require('fs')
 
@@ -32,7 +32,8 @@ const getProduct=async(req,res,next)=>{
                     attributes:['id','imageurl'],
                 },
                 {model:Review,
-                    attributes:{exclude:['ProductId','UserId','updatedAt']}
+                    attributes:{exclude:['ProductId','UserId','updatedAt']},
+                    include:[{model:User,attributes:['first_name','last_name']}]
                 },
                 {model:Category,
                     through:{attributes:[]},
@@ -67,24 +68,31 @@ const createProduct=async (req,res,next)=>{
     const files=req.files
     if(files){
         for(const file of files){
-            const {path}=file
-            const uploadFile= await cloudinary.uploads(path,'OhstoreImgs')
-            urls.push({imageurl:uploadFile.url})
-            fs.unlinkSync(path)
+            try {           
+                const {path}=file
+                const uploadFile= await cloudinary.uploads(path,'OhstoreImgs')
+                urls.push({imageurl:uploadFile.url})
+                fs.unlinkSync(path)
+            } catch (error) {
+                console.log('error occured while uploading')
+            }
         }
     }
 
-    console.log(urls[0].imageurl)
+    // console.log(urls[0].imageurl)
     const {title,content,selling_price,bonus_price,categories}=req.body
     let stDate=Date.now()
     if(title){
         const findCat=await Category.findAll({where:{cat_name:categories?categories:null}})
         const catResult=JSON.parse(JSON.stringify(findCat))
         console.log(catResult)
-        let slug=title.replace(/[^A-Za-z0-9\s]/gi,'').toLowerCase().replace(/[\s]/g,'-')
+        let oslug=title.replace(/[^A-Za-z0-9\s]/gi,'').toLowerCase().split(' ')
+        slug=''
+        for(i=0;i<7;i++){slug+=`${oslug[i]}-`}
+        // .replace(/[\s]/g,'-')
           const data={
               title:title,
-              slug:`${slug}-${stDate}`,
+              slug:`${slug}${stDate}`,
               featured_imgurl:urls.length?urls[0].imageurl:'',
               content:content?content:'',
               selling_price:selling_price?selling_price:0.00,
