@@ -15,7 +15,7 @@ const pro_cat=sq.define('pro_cat',{
     categoryId:{type:DataTypes.INTEGER,allowNull:false,references:{model:Product,key:'id'}}
 },{tableName:'pro_cat'})
 const user_orders=sq.define('user_orders',{})
-const pro_order=sq.define('pro_order',{})
+const pro_order=sq.define('pro_order',{qty:{type:DataTypes.INTEGER,allowNull:false}})
 Review.belongsTo(User)
 User.hasMany(Delivery)
 User.belongsToMany(Order,{through:user_orders})

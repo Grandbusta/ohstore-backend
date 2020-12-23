@@ -6,12 +6,13 @@ const createOrder=async(req,res,next)=>{
     if(phone1&&address1&&city&&state&&products.length){
         try {
             const getUser=req.userData
+            const id=products.map((prod)=>{return prod.id})
             const getProducts=await Product.findAll({
-                where:{id:[...products]}
+                where:{id:[...id]}
             })
             const prodDetails=JSON.parse(JSON.stringify(getProducts))
             const createOrd=await Order.create({
-                trx_ref:'why',
+                trx_ref:'qbasema',
                 UserId:getUser.id,
                 Delivery:[
                     {
@@ -28,20 +29,20 @@ const createOrder=async(req,res,next)=>{
             },{include:[{model:Product},{model:Delivery}]})
             const orderdet=createOrd.toJSON()
             const proarr=[]
-            prodDetails.forEach(produ => {
-                const der={OrderId:orderdet.id,ProductId:produ.id}
+            prodDetails.forEach((produ,index) => {
+                const der={OrderId:orderdet.id,ProductId:produ.id,qty:products[index].id?products[index].qty:1}
                 proarr.push(der)
             });
             await pro_order.bulkCreate(proarr)
             await user_orders.create({OrderId:orderdet.id,UserId:getUser.id})
             const getOrd=await Order.findAll({
-                where:{trx_ref:'why'},
+                where:{trx_ref:'qbasema'},
                 attributes:{exclude:['UserId']},
                 include:[
                     {model:User,attributes:['email','first_name','last_name']},
                     {model:Product,
                         attributes:{exclude:['createdAt','updatedAt','content','product_status']},
-                        through:{attributes:[]}
+                        through:{attributes:['qty']}
                     },
                     {model:Delivery,
                         attributes:{exclude:['UserId','OrderId','createdAt','updatedAt']}

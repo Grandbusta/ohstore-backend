@@ -34,6 +34,7 @@ module.exports.checkAdmin=async(req,res,next)=>{
             const token=req.headers.authorization.split(' ')[1]
             const decoded=jwt.verify(token,env.JWT_KEY)
             const userData=await User.findOne({where:{email:decoded.email},attributes:['email','user_type']})
+            console.log(userData)
             if(userData.user_type==='admin'){
                 req.userData=userData
                 next()
