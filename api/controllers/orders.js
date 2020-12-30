@@ -11,8 +11,9 @@ const createOrder=async(req,res,next)=>{
                 where:{id:[...id]}
             })
             const prodDetails=JSON.parse(JSON.stringify(getProducts))
+            let stDate=Date.now()
             const createOrd=await Order.create({
-                trx_ref:'qbasema',
+                trx_ref:stDate,
                 UserId:getUser.id,
                 Delivery:[
                     {
@@ -36,7 +37,7 @@ const createOrder=async(req,res,next)=>{
             await pro_order.bulkCreate(proarr)
             await user_orders.create({OrderId:orderdet.id,UserId:getUser.id})
             const getOrd=await Order.findAll({
-                where:{trx_ref:'qbasema'},
+                where:{trx_ref:stDate},
                 attributes:{exclude:['UserId']},
                 include:[
                     {model:User,attributes:['email','first_name','last_name']},

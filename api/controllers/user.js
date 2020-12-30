@@ -59,7 +59,7 @@ const signup=async (req,res,next)=>{
 					try {
 						let check=await User.findOne({where:{email:email},attributes:['email']})
 						if(check!==null){
-							res.status(201).json({
+							res.status(400).json({
 								message:'user already exist'
 							})
 						}else{
@@ -72,7 +72,7 @@ const signup=async (req,res,next)=>{
 							}
 							let createUser=await User.create(values)
 							if(createUser){
-								res.status(200).json({
+								res.status(201).json({
 									status:"success",
 									message:'user created successfully'
 								})
