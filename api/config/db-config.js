@@ -10,7 +10,7 @@ const sequelize=new Sequelize(
 check=async ()=>{
     try {
         await sequelize.authenticate()
-        // sequelize.sync({alter:true})
+        sequelize.sync({alter:true})
         console.log('connected')
     } catch (error) {
         console.log('error')
