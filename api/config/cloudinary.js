@@ -10,9 +10,6 @@ cloudinary.config({
 
 
 exports.uploads=(file,folder)=>{
-    // cloudinary.uploader.upload(file,{resource_type:'auto',folder:folder},(err,result)=>{
-    //     console.log(err,result)
-    // })
     return new Promise((resolve,reject)=>{
         cloudinary.uploader.upload(file,{
             resource_type: "auto",

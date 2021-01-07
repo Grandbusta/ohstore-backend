@@ -79,7 +79,6 @@ const createProduct=async (req,res,next)=>{
         }
     }
 
-    // console.log(urls[0].imageurl)
     const {title,content,selling_price,bonus_price,categories}=req.body
     let stDate=Date.now()
     if(title){
@@ -89,7 +88,6 @@ const createProduct=async (req,res,next)=>{
         let oslug=title.replace(/[^A-Za-z0-9\s]/gi,'').toLowerCase().split(' ')
         slug=''
         for(i=0;i<7;i++){slug+=`${oslug[i]}-`}
-        // .replace(/[\s]/g,'-')
           const data={
               title:title,
               slug:`${slug}${stDate}`,

@@ -9,4 +9,6 @@ module.exports={
     DB_PASSWORD:process.env.DB_PASSWORD,
     DB_USER:process.env.DB_USER,
     DB_HOST:process.env.DB_HOST,
+    MAIL_USER:process.env.MAIL_USER,
+    MAIL_PASS:process.env.MAIL_PASS
 }

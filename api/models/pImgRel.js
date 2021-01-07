@@ -10,10 +10,12 @@ const Order=require('./ordersModel')
 
 Product.hasMany(proImg,{as:'product_images'})
 Product.hasMany(Review)
+
 const pro_cat=sq.define('pro_cat',{
     ProductId:{type:DataTypes.INTEGER,allowNull:false,references:{model:Product,key:'id'}},
     categoryId:{type:DataTypes.INTEGER,allowNull:false,references:{model:Product,key:'id'}}
 },{tableName:'pro_cat'})
+
 const user_orders=sq.define('user_orders',{})
 const pro_order=sq.define('pro_order',{qty:{type:DataTypes.INTEGER,allowNull:false}})
 Review.belongsTo(User)

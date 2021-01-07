@@ -17,7 +17,7 @@ const login=async (req,res,next)=>{
 						if(comparePassword){
 							const token=jwt.sign({
 								email:data.email
-							},env.JWT_KEY,{expiresIn:'48h'})
+							},env.JWT_KEY)
 							res.status(200).json({
 								message:'Auth successful',
 								token:token

@@ -1,10 +1,10 @@
 const {Sequelize}=require('sequelize')
-const env=require('../config/env')
+const {DB_NAME,DB_HOST,DB_PASSWORD,DB_USER}=require('../config/env')
 const sequelize=new Sequelize(
-    env.DB_NAME,
-    env.DB_USER,
-    env.DB_PASSWORD,
-    {host:env.DB_HOST,dialect:'mysql'}
+    DB_NAME,
+    DB_USER,
+    DB_PASSWORD,
+    {host:DB_HOST,dialect:'mysql'}
     )
 
 check=async ()=>{
