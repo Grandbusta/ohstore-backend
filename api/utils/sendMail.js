@@ -3,7 +3,7 @@ const {MAIL_USER,MAIL_PASS}=require('../config/env')
 
 const sendMail=async(info)=>{
     const transporter=nodeMailer.createTransport({
-        service:'gmail',
+        service:"gmail",
         auth:{
             user:MAIL_USER,
             pass:MAIL_PASS
